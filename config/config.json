@@ -1,0 +1,6 @@
+{
+  "development": {
+    "database": "phone_base",
+    "dialect": "postgres"
+  }
+}

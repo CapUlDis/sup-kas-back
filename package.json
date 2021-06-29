@@ -4,17 +4,18 @@
   "description": "test app",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
   },
   "author": "capuldis",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
     "http": "^0.0.1-security",
     "sequelize": "^6.6.4",
     "websocket": "^1.0.34"
   },
   "devDependencies": {
+    "nodemon": "^2.0.7",
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
     "sequelize-cli": "^6.2.0"

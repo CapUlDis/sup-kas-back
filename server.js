@@ -1,5 +1,6 @@
 const http = require('http');
 const webSocketServer = require('websocket').server;
+const { Phone } = require('./models');
 
 
 const PORT = process.env.PORT || 3000;
@@ -14,20 +15,24 @@ const wsServer = new webSocketServer({
 
 const clients = [];
 
-wsServer.on('request', function (request) {
+wsServer.on('request', async (request) => {
   console.log((new Date()) + ' Recieved a new connection from origin ' + request.origin + '.');
 
-  // You can rewrite this part of the code to accept only the requests from allowed origin
   const connection = request.accept(null, request.origin);
-
   clients.push(connection);
 
-  connection.on('message', function(message) {
-    if (message.type === 'utf8') {
-      console.log('Received Message: ', message.utf8Data);
+  const Phones = await Phone.findAll({ attributes: ['phone'] })
+    .then(data => data.map(item => item.phone));
 
-      // broadcasting message to all connected clients
-      clients.forEach(client => client.sendUTF(message.utf8Data));
+  connection.send(JSON.stringify({ list: Phones }));
+
+  connection.on('message', async (message) => {
+    if (message.type === 'utf8') {
+      const data = JSON.parse(message.utf8Data);
+
+      const newPhone = await Phone.create({ phone: data.msg });
+
+      clients.forEach(client => client.send(JSON.stringify({ newPhone: newPhone.phone })));
     }
   })
 });
